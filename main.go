@@ -15,24 +15,13 @@ import (
 )
 
 func init() {
-	// Log as JSON instead of the default ASCII formatter.
-	// log.SetFormatter(&log.JSONFormatter{})
-
-	// Output to stdout instead of the default stderr
-	// Can be any io.Writer, see below for File example
 	log.SetOutput(os.Stdout)
-
-	// Only log the warning severity or above.
 	log.SetLevel(log.WarnLevel)
 }
 
-func repl(c *cli.Context) error {
-	log.Println("repl")
-	return nil
-}
-
+// TODO This is a messy function where everything just kinda came together.
+// Clean it up.
 func run(c *cli.Context) error {
-	log.Println("run")
 
 	if c.Bool("debug") {
 		log.SetLevel(log.DebugLevel)
@@ -40,6 +29,9 @@ func run(c *cli.Context) error {
 	}
 
 	url := c.Args().Get(0)
+	if len(url) == 0 {
+		return cli.Exit("url is missing", 1)
+	}
 	fetcher := request.NewDefaultFetcher(url)
 	executor := runtime.NewAsyncRequestExecutor(fetcher)
 	executor.Start()
@@ -47,7 +39,9 @@ func run(c *cli.Context) error {
 	reader := input.NewStdinReader()
 	reader.Start()
 
+	fmt.Printf("Listening on %s\n", url)
 	for {
+
 		msg, err := reader.Read()
 		if err != nil {
 			panic(err)
@@ -105,11 +99,6 @@ func main() {
 				Name:   "run",
 				Usage:  "start the app",
 				Action: run,
-			},
-			{
-				Name:   "repl",
-				Usage:  "start the repl",
-				Action: repl,
 			},
 		},
 	}

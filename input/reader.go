@@ -53,6 +53,11 @@ func NewStdinReader() StdinReader {
 	return StdinReader{buf: make(chan []byte, 100), out: make(chan Message, 100)}
 }
 
+// writeLoop emits bytes on the reader.out channel.
+// Maybe this thing should know a little about the expected structure
+// so it can be smarter about emitting.
+// E.g. if a payload has mismatched curly braces then it's definitely
+// malformed or incomplete.
 func (reader StdinReader) writeLoop() {
 	var buf bytes.Buffer
 	for {
