@@ -2,8 +2,6 @@ module github.com/cachance7/grapl
 
 go 1.17
 
-replace github.com/cachance7/grapl => ../grapl
-
 require (
 	github.com/TylerBrock/colorjson v0.0.0-20200706003622-8a50f05110d2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d // indirect
